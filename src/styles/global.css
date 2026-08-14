@@ -1,0 +1,117 @@
+@import "./variables.css";
+@import "./reset.css";
+
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
+    font-family:"Outfit",sans-serif;
+
+    -webkit-tap-highlight-color:transparent;
+
+}
+
+html{
+
+    width:100%;
+
+    height:100%;
+
+    scroll-behavior:smooth;
+
+}
+
+body{
+
+    width:100%;
+
+    min-height:100vh;
+
+    min-height:100dvh;
+
+    background:#FFF9FC;
+
+    color:#222;
+
+    overflow-x:hidden;
+
+    -webkit-font-smoothing:antialiased;
+
+    -moz-osx-font-smoothing:grayscale;
+
+    text-rendering:optimizeLegibility;
+
+}
+
+#root{
+
+    width:100%;
+
+    min-height:100vh;
+
+    min-height:100dvh;
+
+}
+
+button{
+
+    font-family:inherit;
+
+    cursor:pointer;
+
+    border:none;
+
+    outline:none;
+
+    user-select:none;
+
+}
+
+input,
+textarea{
+
+    width:100%;
+
+    font-family:inherit;
+
+    outline:none;
+
+    border:none;
+
+    background:none;
+
+    appearance:none;
+
+    -webkit-appearance:none;
+
+}
+
+textarea{
+
+    resize:none;
+
+}
+
+img{
+
+    display:block;
+
+    max-width:100%;
+
+}
+
+a{
+
+    text-decoration:none;
+
+    color:inherit;
+
+}
+
+::-webkit-scrollbar{
+
+    display:none;
+
+}

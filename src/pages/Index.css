@@ -1,0 +1,221 @@
+.index{
+
+    width:100%;
+
+    padding-bottom:110px;
+
+}
+
+/* ---------- HEADER ---------- */
+
+.header{
+
+    text-align:center;
+
+    margin-bottom:44px;
+
+}
+
+.header h1{
+
+    color:#231942;
+
+    font-size:34px;
+
+    font-weight:700;
+
+    letter-spacing:.6px;
+
+    margin-bottom:12px;
+
+}
+
+.header p{
+
+    color:#756E8A;
+
+    font-size:15px;
+
+    line-height:1.8;
+
+}
+
+/* ---------- LIST ---------- */
+
+.index-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:22px;
+
+}
+
+/* ---------- ROW ---------- */
+
+.index-row{
+
+    display:flex;
+
+    align-items:flex-end;
+
+    padding:8px 0;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.index-row:active{
+
+    transform:scale(.99);
+
+}
+
+/* ---------- NUMBER ---------- */
+
+.sr{
+
+    width:42px;
+
+    color:#231942;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    flex-shrink:0;
+
+}
+
+/* ---------- TITLE ---------- */
+
+.title{
+
+    color:#231942;
+
+    font-size:16px;
+
+    font-weight:500;
+
+    white-space:nowrap;
+
+    flex-shrink:0;
+
+}
+
+/* ---------- DOTS ---------- */
+
+.dots{
+
+    flex:1;
+
+    margin:0 10px 6px;
+
+    border-bottom:2px dotted rgba(35,25,66,.22);
+
+}
+
+/* ---------- DATE ---------- */
+
+.date{
+
+    color:#6F6885;
+
+    font-size:14px;
+
+    font-weight:500;
+
+    white-space:nowrap;
+
+    flex-shrink:0;
+
+}
+
+/* ---------- FLOATING BUTTON ---------- */
+
+.new-btn{
+
+    position:fixed;
+
+    right:20px;
+
+    bottom:calc(env(safe-area-inset-bottom) + 20px);
+
+    height:56px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    padding:0 22px;
+
+    border:none;
+
+    border-radius:999px;
+
+    background:#231942;
+
+    color:#ffffff;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    box-shadow:0 12px 28px rgba(35,25,66,.18);
+
+    transition:.25s;
+
+    z-index:999;
+
+}
+
+.new-btn:active{
+
+    transform:scale(.97);
+
+}
+
+.new-btn svg{
+
+    font-size:14px;
+
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width:380px){
+
+    .header h1{
+
+        font-size:30px;
+
+    }
+
+    .title{
+
+        font-size:15px;
+
+    }
+
+    .date{
+
+        font-size:13px;
+
+    }
+
+}
+
+/* ---------- SCROLL ---------- */
+
+::-webkit-scrollbar{
+
+    display:none;
+
+}

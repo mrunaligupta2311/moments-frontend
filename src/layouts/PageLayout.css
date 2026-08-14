@@ -1,0 +1,138 @@
+.page{
+
+    width:100%;
+    min-height:100vh;
+    min-height:100dvh;
+
+    display:flex;
+
+    justify-content:center;
+
+    position:relative;
+
+    padding:24px 20px;
+
+    overflow-x:hidden;
+
+    background-image:url("../assets/diary-bg.png");
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+
+}
+
+.page-center{
+
+    align-items:center;
+
+}
+
+.page-top{
+
+    align-items:flex-start;
+
+    padding-top:96px;
+
+}
+
+/* ---------- CARD ---------- */
+
+.card{
+
+    width:100%;
+
+    max-width:420px;
+
+    margin:0 auto;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+/* ---------- BACK BUTTON ---------- */
+
+.layout-back-btn{
+
+    position:fixed;
+
+    top:calc(env(safe-area-inset-top) + 18px);
+
+    left:20px;
+
+    width:44px;
+
+    height:44px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.88);
+
+    backdrop-filter:blur(12px);
+
+    -webkit-backdrop-filter:blur(12px);
+
+    box-shadow:0 8px 22px rgba(35,25,66,.10);
+
+    color:#231942;
+
+    font-size:16px;
+
+    z-index:999;
+
+    transition:.25s;
+
+}
+
+.layout-back-btn:active{
+
+    transform:scale(.95);
+
+}
+
+/* ---------- LEFT ACTION ---------- */
+
+.layout-left-action{
+
+    position:fixed;
+
+    top:calc(env(safe-area-inset-top) + 72px);
+
+    left:20px;
+
+    z-index:999;
+
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width:420px){
+
+    .page{
+
+        padding-left:18px;
+
+        padding-right:18px;
+
+    }
+
+}
+
+@media (min-width:768px){
+
+    .card{
+
+        max-width:430px;
+
+    }
+
+}
