@@ -1,6 +1,5 @@
 import "./Signup.css";
 import PageLayout from "../layouts/PageLayout";
-import { api } from "../services/api";
 
 
 import { useState, useRef } from "react";
@@ -8,14 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 function Signup() {
 
-   const [formData, setFormData] = useState({
-    fullName: "",
-    username: "",
-    email: "",
-    mobile: "",
-    password: "",
-});
- const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const [step, setStep] = useState(1);
 const otpRefs = useRef([]);
@@ -68,30 +60,21 @@ const handleOtpKeyDown = (e, index) => {
 
                             </p>
 
-                           <label>Name</label>
+                            <label>Name</label>
 
-<input
-    className="signup-input"
-    type="text"
-    placeholder="Mrunali Gupta"
-    onChange={(e) =>
-        setFormData({
-            ...formData,
-            fullName: e.target.value
-        })
-    }
-/>
+                            <input
+
+                                className="signup-input"
+
+                                type="text"
+
+                                placeholder="Mrunali Gupta"
+
+                            />
 
                             <label>Username</label>
 
                             <input
-value={formData.username}
-onChange={(e) =>
-    setFormData({
-        ...formData,
-        username: e.target.value
-    })
-}
 
                                 className="signup-input"
 
@@ -104,13 +87,6 @@ onChange={(e) =>
                             <label>Mobile Number or Email</label>
 
                             <input
-value={formData.email}
-onChange={(e) =>
-    setFormData({
-        ...formData,
-        email: e.target.value
-    })
-}
 
                                 className="signup-input"
 
@@ -153,13 +129,6 @@ onChange={(e) =>
             <label>Password</label>
 
             <input
-value={formData.password}
-onChange={(e) =>
-    setFormData({
-        ...formData,
-        password: e.target.value
-    })
-}
 
                 className="signup-input"
 
@@ -185,21 +154,7 @@ onChange={(e) =>
 
                 className="signup-btn"
 
-              
-                onClick={async () => {
-    try {
-        const result = await api("/auth/signup", {
-            method: "POST",
-            body: JSON.stringify(formData),
-        });
-
-        console.log("Signup response:", result);
-        setStep(3);
-    } catch (error) {
-        console.error("Signup error:", error);
-        alert(error.message);
-    }
-}}
+                onClick={()=>setStep(3)}
 
             >
 
