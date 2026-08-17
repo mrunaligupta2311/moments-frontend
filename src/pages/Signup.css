@@ -289,3 +289,10 @@
     display:none;
 
 }
+.signup-or {
+    text-align: center;
+    color: #362664;
+    font-size: 14px;
+    font-weight: 700;
+    margin: -8px 0 14px;
+}

@@ -101,21 +101,7 @@ onChange={(e) =>
 
                             />
 
-                            <label>Email</label>
-<input
-    value={formData.email}
-    onChange={(e) =>
-        setFormData({
-            ...formData,
-            email: e.target.value
-        })
-    }
-    className="signup-input"
-    type="email"
-    placeholder="mrunali@example.com"
-/>
-<div className="signup-or">or</div>
-<label>Mobile Number</label>
+                            <label>Mobile Number</label>
 <input
     value={formData.mobile}
     onChange={(e) =>
@@ -128,7 +114,21 @@ onChange={(e) =>
     type="tel"
     placeholder="9876543210"
 />
+<div className="signup-or">Or you can continue with</div>
 
+<label>Email</label>
+<input
+    value={formData.email}
+    onChange={(e) =>
+        setFormData({
+            ...formData,
+            email: e.target.value
+        })
+    }
+    className="signup-input"
+    type="email"
+    placeholder="mrunali@example.com"
+/>
                             <button
 
                                 className="signup-btn"
