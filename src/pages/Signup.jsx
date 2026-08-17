@@ -101,24 +101,33 @@ onChange={(e) =>
 
                             />
 
-                            <label>Mobile Number or Email</label>
+                            <label>Email</label>
+<input
+    value={formData.email}
+    onChange={(e) =>
+        setFormData({
+            ...formData,
+            email: e.target.value
+        })
+    }
+    className="signup-input"
+    type="email"
+    placeholder="mrunali@example.com"
+/>
 
-                            <input
-value={formData.email}
-onChange={(e) =>
-    setFormData({
-        ...formData,
-        email: e.target.value
-    })
-}
-
-                                className="signup-input"
-
-                                type="text"
-
-                                placeholder="+91 9876543210"
-
-                            />
+<label>Mobile Number</label>
+<input
+    value={formData.mobile}
+    onChange={(e) =>
+        setFormData({
+            ...formData,
+            mobile: e.target.value
+        })
+    }
+    className="signup-input"
+    type="tel"
+    placeholder="9876543210"
+/>
 
                             <button
 
