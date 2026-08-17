@@ -21,6 +21,8 @@ function Signup() {
 
     const [step, setStep] = useState(1);
 const [otp, setOtp] = useState("");
+const [personalPassword, setPersonalPassword] = useState("");
+const [confirmPersonalPassword, setConfirmPersonalPassword] = useState("");
 
     const otpRefs = useRef([]);
 const handleOtpChange = (e, index) => {
@@ -306,7 +308,7 @@ onChange={(e) =>
 
         console.log("OTP verification:", result);
      localStorage.setItem("token", result.data.token);
-     
+
         setStep(4);
     } catch (error) {
         console.error("OTP verification error:", error);
@@ -351,28 +353,23 @@ onChange={(e) =>
 
             <label>Personal Space Password</label>
 
-            <input
-
-                className="signup-input"
-
-                type="password"
-
-                placeholder="Create Password"
-
-            />
+           <input
+  className="signup-input"
+  type="password"
+  placeholder="Create Password"
+  value={personalPassword}
+  onChange={(e) => setPersonalPassword(e.target.value)}
+/>
 
             <label>Confirm Password</label>
 
-            <input
-
-                className="signup-input"
-
-                type="password"
-
-                placeholder="Re-enter Password"
-
-            />
-
+           <input
+  className="signup-input"
+  type="password"
+  placeholder="Re-enter Password"
+  value={confirmPersonalPassword}
+  onChange={(e) => setConfirmPersonalPassword(e.target.value)}
+/>
             <label className="checkbox">
 
                 <input type="checkbox"/>
@@ -390,8 +387,33 @@ onChange={(e) =>
 
                 className="signup-btn"
 
-                onClick={()=>navigate("/login")}
+            onClick={async () => {
+  if (personalPassword !== confirmPersonalPassword) {
+    alert("Passwords do not match");
+    return;
+  }
 
+  if (!personalPassword) {
+    alert("Please enter a personal password");
+    return;
+  }
+
+  try {
+    const result = await api("/auth/set-personal-password", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: formData.userId,
+        personalPassword,
+      }),
+    });
+
+    console.log("Personal password:", result);
+    navigate("/login");
+  } catch (error) {
+    console.error("Personal password error:", error);
+    alert(error.message);
+  }
+}} 
             >
 
                 Create Account
