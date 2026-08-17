@@ -114,7 +114,7 @@ onChange={(e) =>
     type="email"
     placeholder="mrunali@example.com"
 />
-
+<div className="signup-or">or</div>
 <label>Mobile Number</label>
 <input
     value={formData.mobile}
