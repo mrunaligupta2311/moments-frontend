@@ -8,32 +8,37 @@ import { useNavigate } from "react-router-dom";
 
 function Signup() {
 
-   const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
     fullName: "",
     username: "",
     email: "",
     mobile: "",
     password: "",
+    userId: "",
 });
+
  const navigate = useNavigate();
 
     const [step, setStep] = useState(1);
-const otpRefs = useRef([]);
-const handleOtpChange = (e, index) => {
+const [otp, setOtp] = useState("");
 
+    const otpRefs = useRef([]);
+const handleOtpChange = (e, index) => {
     const value = e.target.value;
 
     if (!/^[0-9]?$/.test(value)) return;
 
-    e.target.value = value;
+    const newOtp = otp.split("");
+    newOtp[index] = value;
+    setOtp(newOtp.join(""));
 
     if (value && index < 5) {
-
         otpRefs.current[index + 1].focus();
-
     }
-
 };
+
+
+
 
 const handleOtpKeyDown = (e, index) => {
 
@@ -166,6 +171,7 @@ value={formData.password}
 onChange={(e) =>
     setFormData({
         ...formData,
+
         password: e.target.value
     })
 }
@@ -197,12 +203,18 @@ onChange={(e) =>
               
                 onClick={async () => {
     try {
+
+       
         const result = await api("/auth/signup", {
             method: "POST",
             body: JSON.stringify(formData),
         });
 
-        console.log("Signup response:", result);
+        setFormData({
+    ...formData,
+    userId: result.data.id
+});
+ console.log("Signup response:", result);
         setStep(3);
     } catch (error) {
         console.error("Signup error:", error);
@@ -282,7 +294,25 @@ onChange={(e) =>
 
                 className="signup-btn"
 
-                onClick={()=>setStep(4)}
+               onClick={async () => {
+    try {
+        const result = await api("/auth/verify-otp", {
+            method: "POST",
+            body: JSON.stringify({
+                userId: formData.userId,
+                otp,
+            }),
+        });
+
+        console.log("OTP verification:", result);
+     localStorage.setItem("token", result.data.token);
+     
+        setStep(4);
+    } catch (error) {
+        console.error("OTP verification error:", error);
+        alert(error.message);
+    }
+}}
 
             >
 
