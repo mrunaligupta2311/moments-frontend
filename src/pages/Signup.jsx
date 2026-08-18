@@ -23,6 +23,7 @@ function Signup() {
 const [otp, setOtp] = useState("");
 const [personalPassword, setPersonalPassword] = useState("");
 const [confirmPersonalPassword, setConfirmPersonalPassword] = useState("");
+const [showSuccess, setShowSuccess] = useState(false);
 
     const otpRefs = useRef([]);
 const handleOtpChange = (e, index) => {
@@ -408,7 +409,7 @@ onChange={(e) =>
     });
 
     console.log("Personal password:", result);
-    navigate("/login");
+    setShowSuccess(true);
   } catch (error) {
     console.error("Personal password error:", error);
     alert(error.message);
@@ -419,7 +420,17 @@ onChange={(e) =>
                 Create Account
 
             </button>
-
+{showSuccess && (
+  <div className="success-popup">
+    <div className="success-popup-content">
+      <h2>Account Created!</h2>
+      <p>Your Moments account has been created successfully.</p>
+      <button onClick={() => navigate("/login")}>
+        Continue to Login
+      </button>
+    </div>
+  </div>
+)}
         </>
 
     )

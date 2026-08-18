@@ -296,3 +296,36 @@
     font-weight: 700;
     margin: -8px 0 14px;
 }
+.success-popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.success-popup-content {
+  width: min(90%, 400px);
+  padding: 32px;
+  border-radius: 20px;
+  background: white;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.success-popup-content h2 {
+  margin-bottom: 10px;
+}
+
+.success-popup-content p {
+  margin-bottom: 24px;
+}
+
+.success-popup-content button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
