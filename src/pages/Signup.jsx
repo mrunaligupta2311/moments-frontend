@@ -312,8 +312,9 @@ onChange={(e) =>
 
     console.log("Resend result:", result);
 
-    setResendSeconds(result.retryAfter === 30 ? 60 : result.retryAfter);
-     
+   setResendSeconds(60);
+   
+    
 setOtp("");
     } catch (error) {
       alert(error.message);
