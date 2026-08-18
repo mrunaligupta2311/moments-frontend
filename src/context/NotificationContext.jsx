@@ -1,8 +1,6 @@
-import { createContext, useContext, useState } from "react";
 import Notification from "../components/Notification";
 import { registerNotificationHandler } from "../services/notification";
 import { createContext, useContext, useEffect, useState } from "react";
-
 const NotificationContext = createContext(null);
 
 // Register the notification handler with the global service
