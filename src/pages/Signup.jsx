@@ -3,7 +3,7 @@ import PageLayout from "../layouts/PageLayout";
 import { api } from "../services/api";
 
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Signup() {
@@ -24,6 +24,8 @@ const [otp, setOtp] = useState("");
 const [personalPassword, setPersonalPassword] = useState("");
 const [confirmPersonalPassword, setConfirmPersonalPassword] = useState("");
 const [showSuccess, setShowSuccess] = useState(false);
+const [resendSeconds, setResendSeconds] = useState(30);
+const [resendLoading, setResendLoading] = useState(false);
 
     const otpRefs = useRef([]);
 const handleOtpChange = (e, index) => {
@@ -52,10 +54,18 @@ const handleOtpKeyDown = (e, index) => {
     ) {
 
         otpRefs.current[index - 1].focus();
-
-    }
-
 };
+    }
+useEffect(() => {
+  if (step !== 3 || resendSeconds <= 0) return;
+
+  const timer = setInterval(() => {
+    setResendSeconds((prev) => prev - 1);
+  }, 1000);
+
+  return () => clearInterval(timer);
+}, [step, resendSeconds]);
+
     return(
 
         <PageLayout>
@@ -218,7 +228,9 @@ onChange={(e) =>
     userId: result.data.id
 });
  console.log("Signup response:", result);
-        setStep(3);
+       
+ setResendSeconds(30);
+ setStep(3);
     } catch (error) {
         console.error("Signup error:", error);
         alert(error.message);
@@ -283,15 +295,42 @@ onChange={(e) =>
 
             </p>
 
-            <button
+           <button
+  className="resend-btn"
+  disabled={resendSeconds > 0 || resendLoading}
+  onClick={async () => {
+    try {
+      setResendLoading(true);
 
-                className="resend-btn"
+     const result = await api("/auth/resend-otp", {
 
-            >
+        method: "POST",
+        body: JSON.stringify({
+          userId: formData.userId,
+        }),
+      });
 
-                Resend OTP
+    console.log("Resend result:", result);
+setResendSeconds(result.data?.retryAfter || 30);
 
-            </button>
+setOtp("");
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setResendLoading(false);
+    }
+  }}
+>
+  {resendLoading
+    ? "Sending..."
+    : resendSeconds > 0
+    ? `Resend OTP in ${resendSeconds}s`
+    : "Resend OTP"}
+</button>
+
+
+
+
 
             <button
 
@@ -420,24 +459,23 @@ onChange={(e) =>
                 Create Account
 
             </button>
-{showSuccess && (
-  <div className="success-popup">
-    <div className="success-popup-content">
-      <h2>Account Created!</h2>
-      <p>Your Moments account has been created successfully.</p>
-      <button onClick={() => navigate("/login")}>
-        Continue to Login
-      </button>
-    </div>
-  </div>
-)}
         </>
 
     )
 
 }
             </div>
-
+{showSuccess && (
+  <div className="success-popup">
+    <div className="success-popup-content">
+     <h2>Welcome to Moments ✨</h2>
+<p>Your account has been created successfully.</p>
+ <button onClick={() => navigate("/login")}>
+        Continue to Login
+      </button>
+    </div>
+  </div>
+)}
         </PageLayout>
 
     );
