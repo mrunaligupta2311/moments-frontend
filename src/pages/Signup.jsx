@@ -313,7 +313,7 @@ setStep(3);
 console.log("Resend result:", result);
 
 const nextDelay = {
-  30: 60,
+ 
   60: 120,
   120: 300,
   300: 600,
