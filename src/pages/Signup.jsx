@@ -18,6 +18,7 @@ function Signup() {
 });
 
  const navigate = useNavigate();
+const [confirmPassword, setConfirmPassword] = useState("");
 
     const [step, setStep] = useState(1);
 const [otp, setOtp] = useState("");
@@ -201,15 +202,15 @@ onChange={(e) =>
 
             <label>Confirm Password</label>
 
-            <input
+          
+<input
+  className="signup-input"
+  type="password"
+  placeholder="Re-enter Password"
+  value={confirmPassword}
+  onChange={(e) => setConfirmPassword(e.target.value)}
+/>
 
-                className="signup-input"
-
-                type="password"
-
-                placeholder="Re-enter Password"
-
-            />
 
             <button
 
@@ -219,7 +220,15 @@ onChange={(e) =>
                 onClick={async () => {
     try {
 
-       
+       if (formData.password !== confirmPassword) {
+  alert("Passwords do not match");
+  return;
+}
+
+if (!formData.password) {
+  alert("Please enter a password");
+  return;
+}
         const result = await api("/auth/signup", {
             method: "POST",
             body: JSON.stringify(formData),
