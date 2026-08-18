@@ -1,7 +1,7 @@
 import "./Signup.css";
 import PageLayout from "../layouts/PageLayout";
 import { api } from "../services/api";
-
+import Notification from "../components/Notification";
 
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +19,8 @@ function Signup() {
 
  const navigate = useNavigate();
 const [confirmPassword, setConfirmPassword] = useState("");
+const [notification, setNotification] = useState(null);
+const [notificationType, setNotificationType] = useState("error");
 
     const [step, setStep] = useState(1);
 const [otp, setOtp] = useState("");
@@ -72,6 +74,14 @@ const handleOtpKeyDown = (e, index) => {
     return(
 
         <PageLayout>
+{notification && (
+  <Notification
+    type={notificationType}
+    message={notification}
+    onClose={() => setNotification(null)}
+  />
+)}
+        
 
             <div className="signup">
 
@@ -221,13 +231,19 @@ onChange={(e) =>
     try {
 
        if (formData.password !== confirmPassword) {
-  alert("Passwords do not match");
-  return;
+ 
+setNotificationType("error");
+setNotification("Passwords do not match");
+return;
+
 }
 
 if (!formData.password) {
-  alert("Please enter a password");
+  if (!formData.password) {
+  setNotificationType("warning");
+  setNotification("Please enter a password");
   return;
+}
 }
         const result = await api("/auth/signup", {
             method: "POST",
@@ -241,10 +257,14 @@ if (!formData.password) {
  console.log("Signup response:", result);
       setResendSeconds(30);
 setStep(3);
-    } catch (error) {
-        console.error("Signup error:", error);
-        alert(error.message);
-    }
+   
+} catch (error) {
+    console.error("Signup error:", error);
+
+    setNotificationType("error");
+    setNotification(error.message);
+}
+
 }}
 
             >
@@ -334,11 +354,14 @@ setResendSeconds(nextDelay || 86400);
 setOtp("");
 
 
-    } catch (error) {
-      alert(error.message);
-    } finally {
-      setResendLoading(false);
-    }
+   } catch (error) {
+  setNotificationType("error");
+  setNotification(error.message);
+} finally {
+  setResendLoading(false);
+}
+
+
   }}
 >
   {resendLoading
@@ -371,9 +394,13 @@ setOtp("");
 
         setStep(4);
     } catch (error) {
-        console.error("OTP verification error:", error);
-        alert(error.message);
-    }
+  console.error("OTP verification error:", error);
+
+  setNotificationType("error");
+  setNotification(error.message);
+}
+
+
 }}
 
             >
@@ -448,15 +475,17 @@ setOtp("");
                 className="signup-btn"
 
             onClick={async () => {
-  if (personalPassword !== confirmPersonalPassword) {
-    alert("Passwords do not match");
-    return;
-  }
+ if (personalPassword !== confirmPersonalPassword) {
+  setNotificationType("error");
+  setNotification("Passwords do not match");
+  return;
+}
+if (!personalPassword) {
+  setNotificationType("warning");
+  setNotification("Please enter a personal password");
+  return;
+}
 
-  if (!personalPassword) {
-    alert("Please enter a personal password");
-    return;
-  }
 
   try {
     const result = await api("/auth/set-personal-password", {
@@ -469,10 +498,13 @@ setOtp("");
 
     console.log("Personal password:", result);
     setShowSuccess(true);
-  } catch (error) {
-    console.error("Personal password error:", error);
-    alert(error.message);
-  }
+ 
+    } catch (error) {
+  console.error("Personal password error:", error);
+
+  setNotificationType("error");
+  setNotification(error.message);
+}
 }} 
             >
 

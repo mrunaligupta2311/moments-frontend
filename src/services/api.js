@@ -1,3 +1,5 @@
+import { showGlobalNotification } from "./notification";
+
 const API_BASE_URL = "https://moments-backend-meol.onrender.com/api";
 
 export const api = async (endpoint, options = {}) => {
@@ -12,8 +14,13 @@ export const api = async (endpoint, options = {}) => {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || "Something went wrong");
-  }
+  const message = data.message || "Something went wrong";
+
+  showGlobalNotification(message, "error");
+
+  throw new Error(message);
+}
+
 
   return data;
 };
