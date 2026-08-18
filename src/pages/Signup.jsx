@@ -24,7 +24,7 @@ const [otp, setOtp] = useState("");
 const [personalPassword, setPersonalPassword] = useState("");
 const [confirmPersonalPassword, setConfirmPersonalPassword] = useState("");
 const [showSuccess, setShowSuccess] = useState(false);
-const [resendSeconds, setResendSeconds] = useState(30);
+const [resendSeconds, setResendSeconds] = useState(0);
 const [resendLoading, setResendLoading] = useState(false);
 
     const otpRefs = useRef([]);
@@ -56,15 +56,17 @@ const handleOtpKeyDown = (e, index) => {
         otpRefs.current[index - 1].focus();
 };
     }
-useEffect(() => {
+    
+  useEffect(() => {
   if (step !== 3 || resendSeconds <= 0) return;
 
-  const timer = setInterval(() => {
+  const timer = setTimeout(() => {
     setResendSeconds((prev) => prev - 1);
   }, 1000);
 
-  return () => clearInterval(timer);
+  return () => clearTimeout(timer);
 }, [step, resendSeconds]);
+
 
     return(
 
@@ -228,9 +230,8 @@ onChange={(e) =>
     userId: result.data.id
 });
  console.log("Signup response:", result);
-       
- setResendSeconds(30);
- setStep(3);
+      setResendSeconds(30);
+setStep(3);
     } catch (error) {
         console.error("Signup error:", error);
         alert(error.message);
@@ -302,20 +303,18 @@ onChange={(e) =>
     try {
       setResendLoading(true);
 
-     const result = await api("/auth/resend-otp", {
+    const result = await api("/auth/resend-otp", {
+  method: "POST",
+  body: JSON.stringify({
+    userId: formData.userId,
+  }),
+});
 
-        method: "POST",
-        body: JSON.stringify({
-          userId: formData.userId,
-        }),
-      });
-
-    console.log("Resend result:", result);
-
-   setResendSeconds(60);
-   
-    
+console.log("Resend result:", result);
+setResendSeconds(result.retryAfter);
 setOtp("");
+
+
     } catch (error) {
       alert(error.message);
     } finally {
