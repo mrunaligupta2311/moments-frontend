@@ -303,7 +303,7 @@ setStep(3);
     try {
       setResendLoading(true);
 
-    const result = await api("/auth/resend-otp", {
+   const result = await api("/auth/resend-otp", {
   method: "POST",
   body: JSON.stringify({
     userId: formData.userId,
@@ -311,7 +311,17 @@ setStep(3);
 });
 
 console.log("Resend result:", result);
-setResendSeconds(result.retryAfter);
+
+const nextDelay = {
+  30: 60,
+  60: 120,
+  120: 300,
+  300: 600,
+  600: 1800,
+  1800: 86400,
+}[result.retryAfter];
+
+setResendSeconds(nextDelay || 86400);
 setOtp("");
 
 
