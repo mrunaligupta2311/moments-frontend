@@ -114,7 +114,7 @@ const [password, setPassword] = useState("");
         });
 
         localStorage.setItem("token", result.data.token);
-
+localStorage.setItem("userId", result.data.id);
         navigate("/password");
    } catch (error) {
   console.error("Login error:", error);

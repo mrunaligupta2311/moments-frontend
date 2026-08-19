@@ -1,5 +1,6 @@
 import "./Password.css";
 import PageLayout from "../layouts/PageLayout";
+import { api } from "../services/api";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -18,20 +19,29 @@ function Password() {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
 
-    const handleContinue = () => {
+    const handleContinue = async () => {
+    try {
+        const userId = localStorage.getItem("userId");
 
-        if (password === "0000") {
-
-            navigate("/index");
-
-        } else {
-
-            setError("Incorrect Password");
-
+        if (!userId) {
+            setError("User session not found");
+            return;
         }
 
-    };
+        await api("/auth/verify-personal-password", {
+            method: "POST",
+            body: JSON.stringify({
+                userId,
+                personalPassword: password,
+            }),
+        });
 
+        navigate("/index");
+
+    } catch (error) {
+        setError(error.message);
+    }
+};
     return (
 
         <PageLayout>
