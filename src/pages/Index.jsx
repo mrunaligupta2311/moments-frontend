@@ -9,34 +9,43 @@ function Index() {
 
     const navigate = useNavigate();
 const [moments, setMoments] = useState([]);
+const [exitPopup, setExitPopup] = useState(false);
 
    
 
-
 useEffect(() => {
-  const loadMoments = async () => {
-    try {
-      const result = await api("/moments");
-      console.log("Moments:", result);
-      setMoments(result.data);
-    } catch (error) {
-      console.error("Failed to load moments:", error);
-    }
-  };
 
-  loadMoments();
+    const loadMoments = async () => {
+        try {
+            const result = await api("/moments");
+            console.log("Moments:", result);
+            setMoments(result.data);
+        } catch (error) {
+            console.error("Failed to load moments:", error);
+        }
+    };
+window.history.pushState({ indexPage: true }, "", "/index");
+
+   const handlePopState = () => {
+    window.history.pushState({ indexPage: true }, "", "/index");
+    setExitPopup(true);
+};
+
+    window.addEventListener("popstate", handlePopState);
+
+    loadMoments();
+
+    return () => {
+        window.removeEventListener("popstate", handlePopState);
+    };
+
 }, []);
-
-
 
     return(
 
         <PageLayout
-
     centered={false}
-
     showBack={false}
-
 >
 
             <div className="index">
@@ -104,6 +113,41 @@ useEffect(() => {
                 </button>
 
             </div>
+
+
+
+{exitPopup && (
+
+    <div className="exit-popup-overlay">
+
+        <div className="exit-popup">
+
+            <h2>
+                Are you sure you want to exit the app?
+            </h2>
+
+            <div className="exit-popup-actions">
+
+                <button
+                    onClick={() => setExitPopup(false)}
+                >
+                    No
+                </button>
+
+                <button
+                    onClick={() => window.close()}
+                >
+                    Yes
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+)}
+
 
         </PageLayout>
 
