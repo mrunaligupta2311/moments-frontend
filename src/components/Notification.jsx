@@ -23,12 +23,17 @@ function Notification({
       <p>{message}</p>
     </div>
 
-    <button onClick={onClose}>OK</button>
- {actionLabel && onAction && (
+   
+   {actionLabel && onAction ? (
   <button onClick={onAction}>
     {actionLabel}
   </button>
-)} </div>
+) : (
+  <button onClick={onClose}>OK</button>
+)}
+   
+   
+    </div>
 </div>
 
   );
