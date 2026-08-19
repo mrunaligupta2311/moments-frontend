@@ -1,19 +1,65 @@
-import "./Moment.css";
+ import "./Moment.css";
 import PageLayout from "../layouts/PageLayout";
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import {
     FaEllipsisV,
     FaEdit
 } from "react-icons/fa";
 
+import { api } from "../services/api";
+
 function Moment() {
 
     const navigate = useNavigate();
+    const { id } = useParams();
 
     const [menuOpen, setMenuOpen] = useState(false);
+    const [moment, setMoment] = useState(null);
+
+    useEffect(() => {
+
+        const loadMoment = async () => {
+
+            try {
+
+                const result = await api(`/moments/${id}`);
+
+                console.log("Moment:", result);
+
+                setMoment(result.data);
+
+            } catch (error) {
+
+                console.error("Failed to load moment:", error);
+
+            }
+
+        };
+
+        loadMoment();
+
+    }, [id]);
+
+    if (!moment) {
+
+        return (
+
+            <PageLayout centered={false}>
+
+                <div className="moment">
+
+                    Loading...
+
+                </div>
+
+            </PageLayout>
+
+        );
+
+    }
 
     return (
 
@@ -33,7 +79,7 @@ function Moment() {
 
                     >
 
-                        <FaEllipsisV/>
+                        <FaEllipsisV />
 
                     </button>
 
@@ -45,13 +91,19 @@ function Moment() {
 
                                 <button
 
-                                    onClick={() => navigate("/edit-moment")}
+                                    onClick={() =>
+                                        navigate(`/edit-moment/${moment.id}`)
+                                    }
 
                                 >
 
-                                    <FaEdit/>
+                                    <FaEdit />
 
-                                    <span>Edit Moment</span>
+                                    <span>
+
+                                        Edit Moment
+
+                                    </span>
 
                                 </button>
 
@@ -73,7 +125,7 @@ function Moment() {
 
                     <span className="date">
 
-                        23 Jul 2021
+                        {moment.date}
 
                     </span>
 
@@ -81,33 +133,25 @@ function Moment() {
 
                 <h1>
 
-                    My 20th Birthday
+                    {moment.title}
 
                 </h1>
 
                 <div className="content">
 
-                    <p>
+                    {
 
-                        Today was one of the happiest days of my life.
+                        moment.description && (
 
-                    </p>
+                            <p>
 
-                    <br/>
+                                {moment.description}
 
-                    <p>
+                            </p>
 
-                        Mom surprised me with a beautiful cake and all my friends secretly planned a celebration for me.
+                        )
 
-                    </p>
-
-                    <br/>
-
-                    <p>
-
-                        I don't think I'll ever forget this day.
-
-                    </p>
+                    }
 
                 </div>
 

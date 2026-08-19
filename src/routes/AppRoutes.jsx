@@ -43,12 +43,13 @@ function AppRoutes() {
                     element={<NewMoment/>}
                 />
 
-                <Route path="/moment" element={<Moment/>}/>
+               <Route path="/moment/:id" element={<Moment />} />
 
-                <Route
-                    path="/edit-moment"
-                    element={<EditMoment/>}
-                />
+<Route
+    path="/edit-moment/:id"
+    element={<EditMoment />}
+ />
+ 
 
                 <Route
                     path="*"

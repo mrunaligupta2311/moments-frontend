@@ -1,10 +1,85 @@
-import "./EditMoment.css";
+ import "./EditMoment.css";
 import PageLayout from "../layouts/PageLayout";
-import { useNavigate } from "react-router-dom";
+
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
+import { api } from "../services/api";
 
 function EditMoment() {
 
     const navigate = useNavigate();
+    const { id } = useParams();
+
+    const [date, setDate] = useState("");
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+
+    useEffect(() => {
+
+        const loadMoment = async () => {
+
+            try {
+
+                const result = await api(`/moments/${id}`);
+
+                console.log("Edit Moment:", result);
+
+                const moment = result.data;
+
+                setDate(moment.date || "");
+                setTitle(moment.title || "");
+                setDescription(moment.description || "");
+
+            } catch (error) {
+
+                console.error("Failed to load moment:", error);
+
+            }
+
+        };
+
+        loadMoment();
+
+    }, [id]);
+
+    const handleSave = async () => {
+
+        if (!title.trim() || !date.trim()) {
+
+            console.log("Please enter title and date");
+
+            return;
+
+        }
+
+        try {
+
+            const result = await api(`/moments/${id}`, {
+
+                method: "PUT",
+
+                body: JSON.stringify({
+
+                    title,
+                    description,
+                    date,
+
+                }),
+
+            });
+
+            console.log("Updated Moment:", result);
+
+            navigate(`/moment/${id}`);
+
+        } catch (error) {
+
+            console.error("Update moment error:", error);
+
+        }
+
+    };
 
     return (
 
@@ -20,15 +95,27 @@ function EditMoment() {
 
                         className="date-input"
 
-                        defaultValue="23 Jul 2021"
+                        placeholder="23 Jul 2026"
+
+                        value={date}
+
+                        onChange={(e) => setDate(e.target.value)}
 
                     />
 
                 </div>
 
-                <h1>Edit Moment</h1>
+                <h1>
 
-                <label>Title</label>
+                    Edit Moment
+
+                </h1>
+
+                <label>
+
+                    Title
+
+                </label>
 
                 <input
 
@@ -36,21 +123,29 @@ function EditMoment() {
 
                     type="text"
 
-                    defaultValue="My 20th Birthday"
+                    placeholder="My 20th Birthday"
+
+                    value={title}
+
+                    onChange={(e) => setTitle(e.target.value)}
 
                 />
 
-                <label>Description</label>
+                <label>
+
+                    Description
+
+                </label>
 
                 <textarea
 
                     className="description"
 
-                    defaultValue={`Today was one of the happiest days of my life.
+                    placeholder="Write your moment..."
 
-Mom surprised me with a beautiful cake and all my friends secretly planned a celebration for me.
+                    value={description}
 
-I don't think I'll ever forget this day.`}
+                    onChange={(e) => setDescription(e.target.value)}
 
                 />
 
@@ -58,7 +153,7 @@ I don't think I'll ever forget this day.`}
 
                     className="save-btn"
 
-                    onClick={() => navigate("/moment")}
+                    onClick={handleSave}
 
                 >
 
