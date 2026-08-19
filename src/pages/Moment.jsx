@@ -6,7 +6,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import {
     FaEllipsisV,
-    FaEdit
+    FaEdit,
+    FaTrash
 } from "react-icons/fa";
 
 import { api } from "../services/api";
@@ -18,6 +19,7 @@ function Moment() {
 
     const [menuOpen, setMenuOpen] = useState(false);
     const [moment, setMoment] = useState(null);
+    const [showDeletePopup, setShowDeletePopup] = useState(false);
 
     useEffect(() => {
 
@@ -42,6 +44,24 @@ function Moment() {
         loadMoment();
 
     }, [id]);
+
+    const handleDelete = async () => {
+
+        try {
+
+            await api(`/moments/${id}`, {
+                method: "DELETE",
+            });
+
+            navigate("/index", { replace: true });
+
+        } catch (error) {
+
+            console.error("Delete moment error:", error);
+
+        }
+
+    };
 
     if (!moment) {
 
@@ -107,6 +127,25 @@ function Moment() {
 
                                 </button>
 
+                                <button
+
+                                    onClick={() => {
+                                        setMenuOpen(false);
+                                        setShowDeletePopup(true);
+                                    }}
+
+                                >
+
+                                    <FaTrash />
+
+                                    <span>
+
+                                        Delete Moment
+
+                                    </span>
+
+                                </button>
+
                             </div>
 
                         )
@@ -156,6 +195,52 @@ function Moment() {
                 </div>
 
             </div>
+
+            {
+
+                showDeletePopup && (
+
+                    <div className="delete-popup-overlay">
+
+                        <div className="delete-popup">
+
+                            <h2>
+
+                                Are you sure you want to delete your moment?
+
+                            </h2>
+
+                            <div className="delete-popup-actions">
+
+                                <button
+
+                                    onClick={() => setShowDeletePopup(false)}
+
+                                >
+
+                                    No
+
+                                </button>
+
+                                <button
+
+                                    onClick={handleDelete}
+
+                                >
+
+                                    Yes
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                )
+
+            }
 
         </PageLayout>
 
