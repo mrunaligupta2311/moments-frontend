@@ -2,13 +2,13 @@ import "./PageLayout.css";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-function PageLayout({
 
+function PageLayout({
     children,
     showBack = true,
     leftAction = null,
-    centered = true
-
+    centered = true,
+    onBack = null
 }) {
 
     const navigate = useNavigate();
@@ -29,8 +29,8 @@ function PageLayout({
 
                         className="layout-back-btn"
 
-                        onClick={() => navigate(-1)}
-
+                      onClick={onBack || (() => navigate(-1))}
+                      
                     >
 
                         <FaArrowLeft />
