@@ -123,7 +123,7 @@ localStorage.setItem("userId", result.data.id);
     showGlobalNotification(
       error.message,
       "warning",
-      "Continue to Verify",
+
     () => navigate("/signup", {
   state: {
     step: 3,
