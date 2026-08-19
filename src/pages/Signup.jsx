@@ -97,10 +97,20 @@ function Signup() {
       otpRefs.current[index - 1].focus();
     }
   };
-  
+
+  const handleBack = () => {
+  if (step > 1) {
+    setStep((prev) => prev - 1);
+  } else {
+    navigate("/login");
+  }
+};
+
     return(
 
-        <PageLayout>
+      
+        <PageLayout onBack={handleBack}>
+            
 {notification && (
   <Notification
     type={notificationType}
