@@ -11,6 +11,14 @@ function Signup() {
   
 
  const navigate = useNavigate();
+const [formData, setFormData] = useState({
+  fullName: "",
+  email: "",
+  mobile: "",
+  password: "",
+  userId: "",
+});
+
 const [confirmPassword, setConfirmPassword] = useState("");
 const [notification, setNotification] = useState(null);
 const [notificationType, setNotificationType] = useState("error");
