@@ -113,9 +113,27 @@ const [password, setPassword] = useState("");
             }),
         });
 
-        localStorage.setItem("token", result.data.token);
+       localStorage.setItem("token", result.data.token);
 localStorage.setItem("userId", result.data.id);
-        navigate("/password");
+
+if (!result.data.hasPersonalPassword) {
+  showGlobalNotification(
+    "You haven’t set your Personal Space password.",
+    "warning",
+    "Set Password",
+    () => {
+      navigate("/signup", {
+        state: {
+          step: 4,
+          userId: result.data.id,
+        },
+      });
+    }
+  );
+  return;
+}
+
+navigate("/password");
    } catch (error) {
   console.error("Login error:", error);
 
