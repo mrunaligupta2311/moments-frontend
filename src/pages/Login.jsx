@@ -129,6 +129,7 @@ if (error.message === "Please verify your account first.") {
     }),
   });
 
+
   showGlobalNotification(
     error.message,
     "warning",
@@ -140,8 +141,7 @@ if (error.message === "Please verify your account first.") {
           userId: error.userId,
         },
       })
-  );
-
+;
   return;
 
 
