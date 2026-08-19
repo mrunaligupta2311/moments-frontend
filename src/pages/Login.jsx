@@ -1,7 +1,10 @@
 import "./Login.css";
 import PageLayout from "../layouts/PageLayout";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import { useNavigate, useLocation } from "react-router-dom";
+import { api } from "../services/api";
+import { showGlobalNotification } from "../services/notification";
 
 import {
     FaUser,
@@ -11,6 +14,9 @@ import {
 } from "react-icons/fa";
 
 function Login() {
+const [email, setEmail] = useState("");
+const [mobile, setMobile] = useState("");
+const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
 
@@ -34,27 +40,36 @@ function Login() {
 
                     <FaUser className="icon"/>
 
-                    <input
+                    
 
-                        type="text"
+<input
+    type="text"
+    placeholder="Email or Mobile Number"
+    value={email || mobile}
+    onChange={(e) => {
+        const value = e.target.value;
 
-                        placeholder="Username or Mobile Number"
-
-                    />
+        if (value.includes("@")) {
+            setEmail(value);
+            setMobile("");
+        } else {
+            setMobile(value);
+            setEmail("");
+        }
+    }}
+/>
 
                 </div>
 
                 <div className="input-box">
 
                     <FaLock className="icon"/>
-
-                    <input
-
-                        type={showPassword ? "text" : "password"}
-
-                        placeholder="Password"
-
-                    />
+<input
+    type={showPassword ? "text" : "password"}
+    placeholder="Password"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+/>
 
                     <button
 
@@ -86,7 +101,44 @@ function Login() {
 
                     className="continue-btn"
 
-                    onClick={() => navigate("/password")}
+                  
+                    onClick={async () => {
+    try {
+        const result = await api("/auth/login", {
+            method: "POST",
+            body: JSON.stringify({
+                email: email || null,
+                mobile: mobile || null,
+                password,
+            }),
+        });
+
+        localStorage.setItem("token", result.data.token);
+
+        navigate("/password");
+   } catch (error) {
+  console.error("Login error:", error);
+
+  if (error.message === "Please verify your account first.") {
+    showGlobalNotification(
+      error.message,
+      "warning",
+      "Continue to Verify",
+    () => navigate("/signup", {
+  state: {
+    step: 3,
+    userId: error.userId,
+  },
+})
+
+    );
+    return;
+  }
+
+  showGlobalNotification(error.message, "error");
+}
+}}
+
 
                 >
 

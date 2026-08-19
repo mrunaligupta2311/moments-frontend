@@ -13,13 +13,15 @@ export const api = async (endpoint, options = {}) => {
 
   const data = await response.json();
 
-  if (!response.ok) {
+if (!response.ok) {
   const message = data.message || "Something went wrong";
 
-  showGlobalNotification(message, "error");
 
-  throw new Error(message);
+  const error = new Error(message);
+  error.userId = data.userId;
+  throw error;
 }
+
 
 
   return data;

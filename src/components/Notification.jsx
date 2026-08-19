@@ -1,7 +1,12 @@
 import "./Notification.css";
 
-function Notification({ type = "error", message, onClose }) {
-  if (!message) return null;
+function Notification({
+  type = "error",
+  message,
+  onClose,
+  actionLabel,
+  onAction,
+}) {
 
   return (
    <div className="notification-backdrop">
@@ -19,7 +24,11 @@ function Notification({ type = "error", message, onClose }) {
     </div>
 
     <button onClick={onClose}>OK</button>
-  </div>
+ {actionLabel && onAction && (
+  <button onClick={onAction}>
+    {actionLabel}
+  </button>
+)} </div>
 </div>
 
   );

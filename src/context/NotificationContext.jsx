@@ -3,21 +3,29 @@ import { registerNotificationHandler } from "../services/notification";
 import { createContext, useContext, useEffect, useState } from "react";
 const NotificationContext = createContext(null);
 
-// Register the notification handler with the global service
-registerNotificationHandler((message, type) => {
-  // This will be called by the global notification service
-});
 
 export const NotificationProvider = ({ children }) => {
   const [notification, setNotification] = useState(null);
   const [type, setType] = useState("error");
-
-  const showNotification = (message, notificationType = "error") => {
-    setNotification(message);
-    setType(notificationType);
-  };
+const [actionLabel, setActionLabel] = useState(null);
+const [actionHandler, setActionHandler] = useState(null);
+  const showNotification = (
+  message,
+  notificationType = "error",
+  label = null,
+  handler = null
+) => {
+  setNotification(message);
+  setType(notificationType);
+  setActionLabel(label);
+  setActionHandler(() => handler);
+};
 useEffect(() => {
   registerNotificationHandler(showNotification);
+
+  return () => {
+    registerNotificationHandler(null);
+  };
 }, []);
 
   const hideNotification = () => {
@@ -33,15 +41,15 @@ useEffect(() => {
     >
       {children}
 
-      {notification && (
-        <Notification
-          type={type}
-          message={notification}
-          onClose={hideNotification}
-        />
-      )}
-    </NotificationContext.Provider>
-  );
+{notification && (
+    <Notification
+  type={type}
+  message={notification}
+  onClose={hideNotification}
+  actionLabel={actionLabel}
+  onAction={actionHandler}
+/>)}
+</NotificationContext.Provider>);
 };
 
 export const useNotification = () => {

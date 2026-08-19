@@ -9,12 +9,11 @@ import { useNavigate } from "react-router-dom";
 function Signup() {
 
   const [formData, setFormData] = useState({
-    fullName: "",
-    username: "",
-    email: "",
-    mobile: "",
-    password: "",
-    userId: "",
+  fullName: "",
+  email: "",
+  mobile: "",
+  password: "",
+  userId: initialUserId,
 });
 
  const navigate = useNavigate();
@@ -22,7 +21,13 @@ const [confirmPassword, setConfirmPassword] = useState("");
 const [notification, setNotification] = useState(null);
 const [notificationType, setNotificationType] = useState("error");
 
-    const [step, setStep] = useState(1);
+const location = useLocation();
+
+const initialStep = location.state?.step || 1;
+const initialUserId = location.state?.userId || "";
+
+const [step, setStep] = useState(initialStep);
+
 const [otp, setOtp] = useState("");
 const [personalPassword, setPersonalPassword] = useState("");
 const [confirmPersonalPassword, setConfirmPersonalPassword] = useState("");
@@ -113,24 +118,7 @@ const handleOtpKeyDown = (e, index) => {
     }
 />
 
-                            <label>Username</label>
-
-                            <input
-value={formData.username}
-onChange={(e) =>
-    setFormData({
-        ...formData,
-        username: e.target.value
-    })
-}
-
-                                className="signup-input"
-
-                                type="text"
-
-                                placeholder="@mrunali"
-
-                            />
+                           
 
                             <label>Mobile Number</label>
 <input
