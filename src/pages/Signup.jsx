@@ -4,17 +4,11 @@ import { api } from "../services/api";
 import Notification from "../components/Notification";
 
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Signup() {
 
-  const [formData, setFormData] = useState({
-  fullName: "",
-  email: "",
-  mobile: "",
-  password: "",
-  userId: initialUserId,
-});
+  
 
  const navigate = useNavigate();
 const [confirmPassword, setConfirmPassword] = useState("");
