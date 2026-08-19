@@ -8,8 +8,8 @@
     justify-content: center;
 
     background: rgba(35, 25, 66, 0.12);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
 
 .notification {

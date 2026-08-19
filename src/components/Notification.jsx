@@ -25,9 +25,15 @@ function Notification({
 
    
    {actionLabel && onAction ? (
-  <button onClick={onAction}>
-    {actionLabel}
-  </button>
+ 
+ <button
+  onClick={() => {
+    onClose();
+    onAction();
+  }}
+>
+  {actionLabel}
+</button>
 ) : (
   <button onClick={onClose}>OK</button>
 )}
