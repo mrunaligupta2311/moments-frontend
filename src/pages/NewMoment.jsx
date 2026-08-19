@@ -61,20 +61,27 @@ const [description, setDescription] = useState("");
   console.log("Please enter title and date");
   return;
 }
-                    try {
-    await api("/moments", {
-      method: "POST",
-      body: JSON.stringify({
-        title,
-        description,
-        date,
-      }),
-    });
+         
+console.log("Saving moment:", { title, description, date });
 
-    navigate("/index");
-  } catch (error) {
-    console.error("Save moment error:", error);
-  }
+
+try {
+  const result = await api("/moments", {
+    method: "POST",
+    body: JSON.stringify({
+      title,
+      description,
+      date,
+    }),
+  });
+
+  console.log("CREATE MOMENT RESPONSE:", result);
+
+  navigate("/index");
+} catch (error) {
+  console.error("Save moment error:", error);
+}
+
 }}
 
                 >

@@ -59,15 +59,20 @@ useEffect(() => {
 
                 <section className="index-list">
 
-                   {moments.map((moment) => (
-  <div
+                   
+                 {  moments.map((moment, index) => {
+  console.log("INDEX MOMENT DATE:", moment.date);
+
+  return (
+
+                    <div
     key={moment.id}
     className="index-row"
     onClick={() => navigate(`/moment/${moment.id}`)}
   >
     <span className="sr">
-      {String(moment.id).padStart(2, "0")}.
-    </span>
+   {String(index + 1).padStart(2, "0")}.
+     </span>
 
     <span className="title">
       {moment.title}
@@ -76,10 +81,11 @@ useEffect(() => {
     <span className="dots"></span>
 
     <span className="date">
+
       {moment.date}
     </span>
   </div>
-))}
+); })}
 
                 </section>
 
