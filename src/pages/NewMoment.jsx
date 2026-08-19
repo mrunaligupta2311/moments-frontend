@@ -10,6 +10,12 @@ const navigate = useNavigate();
 const [date, setDate] = useState("");
 const [title, setTitle] = useState("");
 const [description, setDescription] = useState("");
+useEffect(() => {
+  window.history.pushState(null, "", window.location.href);
+  window.onpopstate = () => {
+    navigate("/index", { replace: true });
+  };
+}, []);
 
     return (
 
