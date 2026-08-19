@@ -6,39 +6,75 @@ import Notification from "../components/Notification";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
+
 function Signup() {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  
+  const initialStep = location.state?.step || 1;
+  const initialUserId = location.state?.userId || "";
 
- const navigate = useNavigate();
+  // States
+  const [step, setStep] = useState(initialStep);
 
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    mobile: "",
+    password: "",
+    userId: initialUserId,
+  });
 
-const [confirmPassword, setConfirmPassword] = useState("");
-const [notification, setNotification] = useState(null);
-const [notificationType, setNotificationType] = useState("error");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [otp, setOtp] = useState("");
+  const [personalPassword, setPersonalPassword] = useState("");
+  const [confirmPersonalPassword, setConfirmPersonalPassword] = useState("");
 
-const location = useLocation();
+  const [notification, setNotification] = useState(null);
+  const [notificationType, setNotificationType] = useState("error");
 
-const initialStep = location.state?.step || 1;
-const initialUserId = location.state?.userId || "";
-const [formData, setFormData] = useState({
-  fullName: "",
-  email: "",
-  mobile: "",
-  password: "",
-  userId: initialUserId,
-});
-const [step, setStep] = useState(initialStep);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [resendSeconds, setResendSeconds] = useState(0);
+  const [resendLoading, setResendLoading] = useState(false);
 
-const [otp, setOtp] = useState("");
-const [personalPassword, setPersonalPassword] = useState("");
-const [confirmPersonalPassword, setConfirmPersonalPassword] = useState("");
-const [showSuccess, setShowSuccess] = useState(false);
-const [resendSeconds, setResendSeconds] = useState(0);
-const [resendLoading, setResendLoading] = useState(false);
+  const otpRefs = useRef([]);
 
-    const otpRefs = useRef([]);
-const handleOtpChange = (e, index) => {
+  // Auto resend OTP when coming from Login → Continue to Verify
+  useEffect(() => {
+    if (initialStep !== 3 || !initialUserId) return;
+
+    const resendOTP = async () => {
+      try {
+        await api("/auth/resend-otp", {
+          method: "POST",
+          body: JSON.stringify({
+            userId: initialUserId,
+          }),
+        });
+
+        setResendSeconds(30);
+      } catch (error) {
+        setNotificationType("error");
+        setNotification(error.message);
+      }
+    };
+
+    resendOTP();
+  }, []);
+
+  // OTP countdown
+  useEffect(() => {
+    if (step !== 3 || resendSeconds <= 0) return;
+
+    const timer = setTimeout(() => {
+      setResendSeconds((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [step, resendSeconds]);
+
+  // OTP input handlers
+  const handleOtpChange = (e, index) => {
     const value = e.target.value;
 
     if (!/^[0-9]?$/.test(value)) return;
@@ -48,36 +84,20 @@ const handleOtpChange = (e, index) => {
     setOtp(newOtp.join(""));
 
     if (value && index < 5) {
-        otpRefs.current[index + 1].focus();
+      otpRefs.current[index + 1].focus();
     }
-};
+  };
 
-
-
-
-const handleOtpKeyDown = (e, index) => {
-
+  const handleOtpKeyDown = (e, index) => {
     if (
-        e.key === "Backspace" &&
-        !e.target.value &&
-        index > 0
+      e.key === "Backspace" &&
+      !e.target.value &&
+      index > 0
     ) {
-
-        otpRefs.current[index - 1].focus();
-};
+      otpRefs.current[index - 1].focus();
     }
-    
-  useEffect(() => {
-  if (step !== 3 || resendSeconds <= 0) return;
-
-  const timer = setTimeout(() => {
-    setResendSeconds((prev) => prev - 1);
-  }, 1000);
-
-  return () => clearTimeout(timer);
-}, [step, resendSeconds]);
-
-
+  };
+  
     return(
 
         <PageLayout>
