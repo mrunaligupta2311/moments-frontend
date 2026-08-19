@@ -71,8 +71,8 @@ function EditMoment() {
 
             console.log("Updated Moment:", result);
 
-            navigate(`/moment/${id}`);
-
+           navigate(`/moment/${id}`, { replace: true });
+           
         } catch (error) {
 
             console.error("Update moment error:", error);
