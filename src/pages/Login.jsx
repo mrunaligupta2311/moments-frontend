@@ -133,14 +133,16 @@ if (error.message === "Please verify your account first.") {
     error.message,
     "warning",
     "Continue to Verify",
-    () =>
-      navigate("/signup", {
-        state: {
-          step: 3,
-          userId: error.userId,
-        },
-      })
-  );
+() => {
+  console.log("VERIFY BUTTON CLICKED");
+  navigate("/signup", {
+    state: {
+      step: 3,
+      userId: error.userId,
+   },
+    });
+  }
+);
 
   return;
 
