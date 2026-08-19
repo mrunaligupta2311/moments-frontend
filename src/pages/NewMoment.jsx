@@ -77,7 +77,7 @@ try {
 
   console.log("CREATE MOMENT RESPONSE:", result);
 
-  navigate("/index");
+  navigate("/index", { replace: true });
 } catch (error) {
   console.error("Save moment error:", error);
 }
