@@ -1,34 +1,33 @@
 import "./Index.css";
 import PageLayout from "../layouts/PageLayout";
-
 import { FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { api } from "../services/api";
 
 function Index() {
 
     const navigate = useNavigate();
+const [moments, setMoments] = useState([]);
 
-    const moments = [
+   
 
-        {
-            id:1,
-            title:"My 20th Birthday",
-            date:"23 Jul 2021"
-        },
 
-        {
-            id:2,
-            title:"College Admission",
-            date:"10 Aug 2022"
-        },
+useEffect(() => {
+  const loadMoments = async () => {
+    try {
+      const result = await api("/moments");
+      console.log("Moments:", result);
+      setMoments(result.data);
+    } catch (error) {
+      console.error("Failed to load moments:", error);
+    }
+  };
 
-        {
-            id:3,
-            title:"First Job",
-            date:"15 Jan 2025"
-        }
+  loadMoments();
+}, []);
 
-    ];
+
 
     return(
 
@@ -60,45 +59,27 @@ function Index() {
 
                 <section className="index-list">
 
-                    {
+                   {moments.map((moment) => (
+  <div
+    key={moment.id}
+    className="index-row"
+    onClick={() => navigate(`/moment/${moment.id}`)}
+  >
+    <span className="sr">
+      {String(moment.id).padStart(2, "0")}.
+    </span>
 
-                        moments.map((moment)=>(
+    <span className="title">
+      {moment.title}
+    </span>
 
-                            <div
+    <span className="dots"></span>
 
-                                key={moment.id}
-
-                                className="index-row"
-
-                                onClick={()=>navigate("/moment")}
-
-                            >
-
-                                <span className="sr">
-
-                                    {String(moment.id).padStart(2,"0")}.
-
-                                </span>
-
-                                <span className="title">
-
-                                    {moment.title}
-
-                                </span>
-
-                                <span className="dots"></span>
-
-                                <span className="date">
-
-                                    {moment.date}
-
-                                </span>
-
-                            </div>
-
-                        ))
-
-                    }
+    <span className="date">
+      {moment.date}
+    </span>
+  </div>
+))}
 
                 </section>
 
