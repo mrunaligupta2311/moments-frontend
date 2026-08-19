@@ -11,13 +11,7 @@ function Signup() {
   
 
  const navigate = useNavigate();
-const [formData, setFormData] = useState({
-  fullName: "",
-  email: "",
-  mobile: "",
-  password: "",
-  userId: "",
-});
+
 
 const [confirmPassword, setConfirmPassword] = useState("");
 const [notification, setNotification] = useState(null);
@@ -27,7 +21,13 @@ const location = useLocation();
 
 const initialStep = location.state?.step || 1;
 const initialUserId = location.state?.userId || "";
-
+const [formData, setFormData] = useState({
+  fullName: "",
+  email: "",
+  mobile: "",
+  password: "",
+  userId: initialUserId,
+});
 const [step, setStep] = useState(initialStep);
 
 const [otp, setOtp] = useState("");

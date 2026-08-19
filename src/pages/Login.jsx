@@ -119,20 +119,34 @@ localStorage.setItem("userId", result.data.id);
    } catch (error) {
   console.error("Login error:", error);
 
-  if (error.message === "Please verify your account first.") {
-    showGlobalNotification(
-      error.message,
-      "warning",
+  
 
-    () => navigate("/signup", {
-  state: {
-    step: 3,
-    userId: error.userId,
-  },
-})
+if (error.message === "Please verify your account first.") {
+  await api("/auth/resend-otp", {
+    method: "POST",
+    body: JSON.stringify({
+      userId: error.userId,
+    }),
+  });
 
-    );
-    return;
+  showGlobalNotification(
+    error.message,
+    "warning",
+    "Continue to Verify",
+    () =>
+      navigate("/signup", {
+        state: {
+          step: 3,
+          userId: error.userId,
+        },
+      })
+  );
+
+  return;
+
+
+
+
   }
 
   showGlobalNotification(error.message, "error");
