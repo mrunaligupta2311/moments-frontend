@@ -1,10 +1,15 @@
 import "./NewMoment.css";
 import PageLayout from "../layouts/PageLayout";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { api } from "../services/api";
 
 function NewMoment() {
 
-    const navigate = useNavigate();
+const navigate = useNavigate();
+const [date, setDate] = useState("");
+const [title, setTitle] = useState("");
+const [description, setDescription] = useState("");
 
     return (
 
@@ -14,15 +19,14 @@ function NewMoment() {
 
                 <div className="top-bar">
 
-                    <input
+                   <input
+  type="text"
+  className="date-input"
+  placeholder="23 Jul 2026"
+  value={date}
+  onChange={(e) => setDate(e.target.value)}
+/>
 
-                        type="text"
-
-                        className="date-input"
-
-                        placeholder="23 Jul 2026"
-
-                    />
 
                 </div>
 
@@ -30,31 +34,48 @@ function NewMoment() {
 
                 <label>Title</label>
 
-                <input
-
-                    className="title-input"
-
-                    type="text"
-
-                    placeholder="My 20th Birthday"
-
-                />
+               <input
+  className="title-input"
+  type="text"
+  placeholder="My 20th Birthday"
+  value={title}
+  onChange={(e) => setTitle(e.target.value)}
+/>
 
                 <label>Description</label>
 
-                <textarea
+               <textarea
+  className="description"
+  placeholder="Write your moment..."
+  value={description}
+  onChange={(e) => setDescription(e.target.value)}
+/>
 
-                    className="description"
-
-                    placeholder="Write your moment..."
-
-                />
 
                 <button
 
                     className="save-btn"
 
-                    onClick={() => navigate("/index")}
+                  onClick={async () => {
+ if (!title.trim() || !date.trim()) {
+  console.log("Please enter title and date");
+  return;
+}
+                    try {
+    await api("/moments", {
+      method: "POST",
+      body: JSON.stringify({
+        title,
+        description,
+        date,
+      }),
+    });
+
+    navigate("/index");
+  } catch (error) {
+    console.error("Save moment error:", error);
+  }
+}}
 
                 >
 
