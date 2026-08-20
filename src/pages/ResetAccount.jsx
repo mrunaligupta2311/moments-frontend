@@ -14,6 +14,7 @@ function ResetAccount() {
     const [confirmed, setConfirmed] = useState(false);
     
     const [otp, setOtp] = useState("");
+const [showSuccess, setShowSuccess] = useState(false);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -134,12 +135,7 @@ function ResetAccount() {
             // Account reset successful.
             // Directly open Signup Step 4.
 
-            navigate("/signup", {
-                state: {
-                    step: 4,
-                    userId,
-                },
-            });
+           setShowSuccess(true);
 
         } catch (error) {
 
@@ -327,6 +323,33 @@ function ResetAccount() {
                 )}
 
             </div>
+{showSuccess && (
+    <div className="success-popup">
+        <div className="success-popup-content">
+
+            <h2>Account Reset Successful ✨</h2>
+
+            <p>
+                Your account has been reset successfully.
+                You can now create your Personal Space again.
+            </p>
+
+            <button
+                onClick={() =>
+                    navigate("/signup", {
+                        state: {
+                            step: 4,
+                            userId: localStorage.getItem("userId"),
+                        },
+                    })
+                }
+            >
+                OK
+            </button>
+
+        </div>
+    </div>
+)}
 
         </PageLayout>
 
