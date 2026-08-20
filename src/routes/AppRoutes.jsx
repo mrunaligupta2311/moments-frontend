@@ -14,6 +14,7 @@ import Index from "../pages/Index";
 import NewMoment from "../pages/NewMoment";
 import Moment from "../pages/Moment";
 import EditMoment from "../pages/EditMoment";
+import ResetAccount from "../pages/ResetAccount";
 
 function AppRoutes() {
 
@@ -55,6 +56,12 @@ function AppRoutes() {
                     path="*"
                     element={<Navigate to="/" replace />}
                 />
+
+<Route
+    path="/reset-account"
+    element={<ResetAccount/>}
+/>
+
 
             </Routes>
 

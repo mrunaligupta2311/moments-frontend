@@ -1,12 +1,15 @@
- import "./ForgotPassword.css";
+
+import "./ForgotPassword.css";
 import PageLayout from "../layouts/PageLayout";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { api } from "../services/api";
 
 function ForgotPassword() {
+
+
 
     const navigate = useNavigate();
 
@@ -20,6 +23,7 @@ function ForgotPassword() {
         "",
         "",
         "",
+        "",
     ]);
 
     const [newPassword, setNewPassword] = useState("");
@@ -28,7 +32,29 @@ function ForgotPassword() {
 
     const [loading, setLoading] = useState(false);
 
+    const [resendSeconds, setResendSeconds] = useState(0);
+
+    const [resendLoading, setResendLoading] = useState(false);
+
+    const [error, setError] = useState("");
+
+    const [success, setSuccess] = useState("");
+
+    const [userId, setUserId] = useState("");
+
     const otpRefs = useRef([]);
+
+
+useEffect(() => {
+    if (resendSeconds <= 0) return;
+
+    const timer = setInterval(() => {
+        setResendSeconds((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+}, [resendSeconds]);
+
 
     const handleOtpChange = (e, index) => {
 
@@ -43,6 +69,8 @@ function ForgotPassword() {
         updatedOtp[index] = value;
 
         setOtp(updatedOtp);
+
+        setError("");
 
         if (value && index < 5) {
 
@@ -66,93 +94,118 @@ function ForgotPassword() {
 
     };
 
-    
-
-const handleSendOtp = async () => {
-
-    const value = identifier.trim();
-
-    if (!value) {
-        console.log(
-            "Please enter your registered mobile number or email"
-        );
-        return;
-    }
-
-    try {
-
-        setLoading(true);
-
-        const isEmail = value.includes("@");
-
-        const body = isEmail
-            ? { email: value }
-            : { mobile: value };
-
-        const result = await api(
-            "/auth/forgot-password",
-            {
-                method: "POST",
-                body: JSON.stringify(body),
-            }
-        );
-
-        console.log(
-            "Forgot password OTP response:",
-            result
-        );
-
-        setStep(2);
-
-    } catch (error) {
-
-        console.error(
-            "Forgot password error:",
-            error
-        );
-
-    } finally {
-
-        setLoading(false);
-
-    }
-
-};
-
-
-
-
-const handleVerifyOtp = async () => {
-
-    const enteredOtp = otp.join("");
-
-    if (enteredOtp.length !== 6) {
-
-        console.log(
-            "Please enter the complete OTP"
-        );
-
-        return;
-
-    }
-
-    try {
-
-        setLoading(true);
+    const handleSendOtp = async () => {
 
         const value = identifier.trim();
 
+        setError("");
+        setSuccess("");
+
+        if (!value) {
+
+            setError(
+                "Please enter your registered email or mobile number."
+            );
+
+            return;
+
+        }
+
         const isEmail = value.includes("@");
 
-        const body = isEmail
-            ? {
-                email: value,
-                otp: enteredOtp,
-              }
-            : {
-                mobile: value,
-                otp: enteredOtp,
-              };
+        if (isEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+
+            setError("Please enter a valid email address.");
+
+            return;
+
+        }
+
+        try {
+
+            setLoading(true);
+
+            const body = isEmail
+                ? { email: value }
+                : { mobile: value };
+
+            const result = await api(
+                "/auth/forgot-password",
+                {
+                    method: "POST",
+                    body: JSON.stringify(body),
+                }
+            );
+
+            console.log(
+                "Forgot password OTP response:",
+                result
+            );
+
+            setUserId(result.data?.userId || result.userId || "");
+
+            setStep(2);
+
+            setResendSeconds(30);
+
+            setSuccess(
+                "OTP has been sent successfully."
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Forgot password error:",
+                error
+            );
+
+            setError(
+                error.message ||
+                "Unable to send OTP. Please try again."
+            );
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    };
+
+    const handleVerifyOtp = async () => {
+
+        setError("");
+        setSuccess("");
+
+        const enteredOtp = otp.join("");
+
+        if (enteredOtp.length !== 6) {
+
+            setError(
+                "Please enter the complete 6-digit OTP."
+            );
+
+            return;
+
+        }
+
+        try {
+
+            setLoading(true);
+
+            const value = identifier.trim();
+
+            const isEmail = value.includes("@");
+
+            const body = isEmail
+                ? {
+                    email: value,
+                    otp: enteredOtp,
+                  }
+                : {
+                    mobile: value,
+                    otp: enteredOtp,
+                  };
 
         const result = await api(
             "/auth/verify-forgot-password-otp",
@@ -169,89 +222,218 @@ const handleVerifyOtp = async () => {
 
         setStep(3);
 
-    } catch (error) {
-
-        console.error(
-            "OTP verification error:",
-            error
+        setSuccess(
+            "OTP verified successfully."
         );
 
-    } finally {
+        } catch (error) {
 
-        setLoading(false);
+            console.error(
+                "OTP verification error:",
+                error
+            );
 
-    }
+            setError(
+                error.message ||
+                "Incorrect or expired OTP."
+            );
 
-};
+        } finally {
 
+            setLoading(false);
 
-const handleUpdatePassword = async () => {
+        }
 
-    if (!newPassword.trim() || !confirmPassword.trim()) {
-        console.log("Please enter both passwords");
-        return;
-    }
+    };
 
-    if (newPassword !== confirmPassword) {
-        console.log("Passwords do not match");
-        return;
-    }
+    const handleResendOtp = async () => {
 
-    try {
+        if (resendSeconds > 0 || resendLoading) {
+            return;
+        }
 
-        setLoading(true);
+        setError("");
+        setSuccess("");
 
-        const value = identifier.trim();
+        try {
 
-        const isEmail = value.includes("@");
+            setResendLoading(true);
 
-        const body = isEmail
-            ? {
-                email: value,
-                newPassword,
-              }
-            : {
-                mobile: value,
-                newPassword,
-              };
+            const value = identifier.trim();
 
-        const result = await api(
-            "/auth/reset-password",
-            {
-                method: "POST",
-                body: JSON.stringify(body),
-            }
-        );
+            const isEmail = value.includes("@");
 
-        console.log(
-            "Password reset response:",
-            result
-        );
+            const body = isEmail
+                ? { email: value }
+                : { mobile: value };
 
-        navigate("/login", {
-            replace: true,
-        });
+            const result = await api(
+                "/auth/forgot-password",
+                {
+                    method: "POST",
+                    body: JSON.stringify(body),
+                }
+            );
 
-    } catch (error) {
+            console.log(
+                "Forgot password resend result:",
+                result
+            );
 
-        console.error(
-            "Password reset error:",
-            error
-        );
+            setResendSeconds(result.retryAfter || 60);
 
-    } finally {
+            setOtp([
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+            ]);
 
-        setLoading(false);
+            setSuccess(
+                "A new OTP has been sent."
+            );
 
-    }
+        } catch (error) {
 
-};
+            console.error(
+                "Resend OTP error:",
+                error
+            );
+
+            setError(
+                error.message ||
+                "Unable to resend OTP."
+            );
+
+        } finally {
+
+            setResendLoading(false);
+
+        }
+
+    };
+
+    const handleUpdatePassword = async () => {
+
+        setError("");
+        setSuccess("");
+
+        if (!newPassword.trim()) {
+
+            setError(
+                "Please enter a new password."
+            );
+
+            return;
+
+        }
+
+        if (!confirmPassword.trim()) {
+
+            setError(
+                "Please confirm your new password."
+            );
+
+            return;
+
+        }
+
+        if (newPassword !== confirmPassword) {
+
+            setError(
+                "Passwords do not match."
+            );
+
+            return;
+
+        }
+
+        try {
+
+            setLoading(true);
+
+            const value = identifier.trim();
+
+            const isEmail = value.includes("@");
+
+            const body = isEmail
+                ? {
+                    email: value,
+                    newPassword,
+                  }
+                : {
+                    mobile: value,
+                    newPassword,
+                  };
+
+            const result = await api(
+                "/auth/reset-password",
+                {
+                    method: "POST",
+                    body: JSON.stringify(body),
+                }
+            );
+
+            console.log(
+                "Password reset response:",
+                result
+            );
+
+            setSuccess(
+                "Password updated successfully."
+            );
+
+            setTimeout(() => {
+
+                navigate("/login", {
+                    replace: true,
+                });
+
+            }, 1000);
+
+        } catch (error) {
+
+            console.error(
+                "Password reset error:",
+                error
+            );
+
+            setError(
+                error.message ||
+                "Unable to reset password."
+            );
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    };
 
     return (
 
         <PageLayout>
 
             <div className="forgot-password">
+
+                {error && (
+
+                    <div className="forgot-error">
+                        {error}
+                    </div>
+
+                )}
+
+                {success && (
+
+                    <div className="forgot-success">
+                        {success}
+                    </div>
+
+                )}
 
                 {step === 1 && (
 
@@ -275,9 +457,13 @@ const handleUpdatePassword = async () => {
                             type="text"
                             placeholder="+91 9876543210"
                             value={identifier}
-                            onChange={(e) =>
-                                setIdentifier(e.target.value)
-                            }
+                            onChange={(e) => {
+
+                                setIdentifier(e.target.value);
+                                setError("");
+                                setSuccess("");
+
+                            }}
                         />
 
                         <button
@@ -343,16 +529,24 @@ const handleUpdatePassword = async () => {
                         </div>
 
                         <p className="otp-text">
-                            Didn't receive the verification code?
+                            Didn't receive the OTP?
                         </p>
 
                         <button
                             className="resend-btn"
-                            onClick={handleSendOtp}
-                            disabled={loading}
+                            onClick={handleResendOtp}
+                            disabled={
+                                resendSeconds > 0 ||
+                                resendLoading
+                            }
                         >
 
-                            Resend Code
+                            {resendLoading
+                                ? "Sending..."
+                                : resendSeconds > 0
+                                ? `Resend OTP in ${resendSeconds}s`
+                                : "Resend OTP"
+                            }
 
                         </button>
 
@@ -395,9 +589,13 @@ const handleUpdatePassword = async () => {
                             type="password"
                             placeholder="Enter New Password"
                             value={newPassword}
-                            onChange={(e) =>
-                                setNewPassword(e.target.value)
-                            }
+                            onChange={(e) => {
+
+                                setNewPassword(e.target.value);
+                                setError("");
+                                setSuccess("");
+
+                            }}
                         />
 
                         <label>
@@ -409,9 +607,13 @@ const handleUpdatePassword = async () => {
                             type="password"
                             placeholder="Re-enter Password"
                             value={confirmPassword}
-                            onChange={(e) =>
-                                setConfirmPassword(e.target.value)
-                            }
+                            onChange={(e) => {
+
+                                setConfirmPassword(e.target.value);
+                                setError("");
+                                setSuccess("");
+
+                            }}
                         />
 
                         <button

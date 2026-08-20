@@ -118,18 +118,20 @@ function Password() {
 
                 </div>
 
-                {
+               {error && (
+    <>
+        <div className="error">
+            {error}
+        </div>
 
-                    error &&
-
-                    <div className="error">
-
-                        {error}
-
-                    </div>
-
-                }
-
+        <button
+            className="reset-account-btn"
+            onClick={() => navigate("/reset-account")}
+        >
+            Reset Account
+        </button>
+    </>
+)}
                 <button
 
                     className="continue-btn"
