@@ -1,4 +1,4 @@
-import {
+ import {
     BrowserRouter,
     Routes,
     Route,
@@ -15,6 +15,7 @@ import NewMoment from "../pages/NewMoment";
 import Moment from "../pages/Moment";
 import EditMoment from "../pages/EditMoment";
 import ResetAccount from "../pages/ResetAccount";
+import ProtectedRoute from "./ProtectedRoute";
 
 function AppRoutes() {
 
@@ -24,44 +25,72 @@ function AppRoutes() {
 
             <Routes>
 
-                <Route path="/" element={<Splash/>}/>
+                {/* PUBLIC ROUTES */}
 
-                <Route path="/login" element={<Login/>}/>
+                <Route
+                    path="/"
+                    element={<Splash />}
+                />
 
-                <Route path="/signup" element={<Signup/>}/>
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
+
+                <Route
+                    path="/signup"
+                    element={<Signup />}
+                />
 
                 <Route
                     path="/forgot-password"
-                    element={<ForgotPassword/>}
+                    element={<ForgotPassword />}
                 />
 
-                <Route path="/password" element={<Password/>}/>
 
-                <Route path="/index" element={<Index/>}/>
+                {/* PROTECTED ROUTES */}
 
-                <Route
-                    path="/newmoment"
-                    element={<NewMoment/>}
-                />
+                <Route element={<ProtectedRoute />}>
 
-               <Route path="/moment/:id" element={<Moment />} />
+                    <Route
+                        path="/password"
+                        element={<Password />}
+                    />
 
-<Route
-    path="/edit-moment/:id"
-    element={<EditMoment />}
- />
+                    <Route
+                        path="/index"
+                        element={<Index />}
+                    />
 
+                    <Route
+                        path="/newmoment"
+                        element={<NewMoment />}
+                    />
+
+                    <Route
+                        path="/moment/:id"
+                        element={<Moment />}
+                    />
+
+                    <Route
+                        path="/edit-moment/:id"
+                        element={<EditMoment />}
+                    />
+
+                    <Route
+                        path="/reset-account"
+                        element={<ResetAccount />}
+                    />
+
+                </Route>
+
+
+                {/* FALLBACK */}
 
                 <Route
                     path="*"
                     element={<Navigate to="/" replace />}
                 />
-
-<Route
-    path="/reset-account"
-    element={<ResetAccount/>}
-/>
-
 
             </Routes>
 

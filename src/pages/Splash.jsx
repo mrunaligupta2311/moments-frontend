@@ -8,17 +8,20 @@ function Splash() {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
+useEffect(() => {
+    const timer = setTimeout(() => {
+        const token = localStorage.getItem("token");
 
-        const timer = setTimeout(() => {
-
+        if (token) {
+            navigate("/index");
+        } else {
             navigate("/login");
+        }
+    }, 1500);
 
-        }, 1500);
+    return () => clearTimeout(timer);
+}, [navigate]);
 
-        return () => clearTimeout(timer);
-
-    }, [navigate]);
 
     return (
 
