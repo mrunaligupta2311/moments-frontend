@@ -8,62 +8,29 @@ export default defineConfig({
 
     react(),
 
-    VitePWA({
+VitePWA({
+  registerType: "autoUpdate",
 
-      registerType: "autoUpdate",
+  manifest: {
+    name: "Moments",
+    short_name: "Moments",
+    description: "Your Personal Diary",
+    theme_color: "#231942",
+    background_color: "#ffffff",
+    display: "standalone",
+    orientation: "portrait",
+    start_url: "/",
 
-      includeAssets: [
-
-        "favicon.svg"
-
-      ],
-
-      manifest: {
-
-        name: "Moments",
-
-        short_name: "Moments",
-
-        description: "Your Personal Diary",
-
-        theme_color: "#231942",
-
-        background_color: "#ffffff",
-
-        display: "standalone",
-
-        orientation: "portrait",
-
-        start_url: "/",
-
-        icons: [
-
-          {
-
-            src: "icon-192.png",
-
-            sizes: "192x192",
-
-            type: "image/png"
-
-          },
-
-          {
-
-            src: "icon-512.png",
-
-            sizes: "512x512",
-
-            type: "image/png"
-
-          }
-
-        ]
-
+    icons: [
+      {
+        src: "moments-icon.png",
+        sizes: "736x736",
+        type: "image/png",
+        purpose: "any maskable"
       }
-
-    })
-
+    ]
+  }
+})
   ]
 
 });
