@@ -1,20 +1,17 @@
 import "./Index.css";
 import PageLayout from "../layouts/PageLayout";
-import { FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
-
+import { FaPlus, FaSignOutAlt } from "react-icons/fa";
 function Index() {
 
     const navigate = useNavigate();
 const [moments, setMoments] = useState([]);
-const [exitPopup, setExitPopup] = useState(false);
-
+const [logoutPopup, setLogoutPopup] = useState(false);
    
 
 useEffect(() => {
-
     const loadMoments = async () => {
         try {
             const result = await api("/moments");
@@ -24,12 +21,12 @@ useEffect(() => {
             console.error("Failed to load moments:", error);
         }
     };
-window.history.pushState({ indexPage: true }, "", "/index");
 
-   const handlePopState = () => {
-    window.history.pushState({ indexPage: true }, "", "/index");
-    setExitPopup(true);
-};
+    window.history.pushState(null, "", "/index");
+
+    const handlePopState = () => {
+        window.history.pushState(null, "", "/index");
+    };
 
     window.addEventListener("popstate", handlePopState);
 
@@ -38,8 +35,8 @@ window.history.pushState({ indexPage: true }, "", "/index");
     return () => {
         window.removeEventListener("popstate", handlePopState);
     };
-
 }, []);
+
 
     return(
 
@@ -49,6 +46,14 @@ window.history.pushState({ indexPage: true }, "", "/index");
 >
 
             <div className="index">
+<button
+    className="logout-icon-btn"
+    onClick={() => setLogoutPopup(true)}
+    aria-label="Logout"
+>
+    <FaSignOutAlt />
+</button>
+
 
                 <header className="header">
 
@@ -115,39 +120,33 @@ window.history.pushState({ indexPage: true }, "", "/index");
             </div>
 
 
+{logoutPopup && (
+    <div className="logout-popup-overlay">
+        <div className="logout-popup">
+            <h2>Are you sure you want to logout?</h2>
 
-{exitPopup && (
-
-    <div className="exit-popup-overlay">
-
-        <div className="exit-popup">
-
-            <h2>
-                Are you sure you want to exit the app?
-            </h2>
-
-            <div className="exit-popup-actions">
+            <div className="logout-popup-actions">
 
                 <button
-                    onClick={() => setExitPopup(false)}
+                    onClick={() => setLogoutPopup(false)}
                 >
                     No
                 </button>
 
                 <button
-                    onClick={() => window.close()}
+                    onClick={() => {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("userId");
+                        navigate("/login");
+                    }}
                 >
                     Yes
                 </button>
 
             </div>
-
         </div>
-
     </div>
-
 )}
-
 
         </PageLayout>
 
